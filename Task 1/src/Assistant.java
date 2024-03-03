@@ -1,31 +1,35 @@
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 
 public class Assistant extends Thread {
 
-    private final Student student;
+    private final BlockingQueue<Student> students;
 
-    public Assistant(Student student) {
-        this.student = student;
+    public Assistant(BlockingQueue<Student> students) {
+        this.students = students;
     }
 
     @Override
     public void run() {
         try {
-            long dT = System.currentTimeMillis() - Main.startTime;
+            while (true) {
+                Student student = students.take();
 
-            student.start();
-            student.join();
+                long dT = System.currentTimeMillis() - Main.startTime;
 
-            int grade = new Random().nextInt(5, 11);
-            student.setGrade(grade);
+                student.start();
+                int grade = new Random().nextInt(5, 11);
+                student.setGrade(grade);
+                student.join();
 
-            Main.studentsTotal.addAndGet(1);
-            Main.gradesTotal.addAndGet(grade);
+                Main.studentsTotal.addAndGet(1);
+                Main.gradesTotal.addAndGet(grade);
 
-            System.out.printf("Thread: %s Arrival: %dms Assistant: %s TTC: %dms:%dms Score: %d\n",
-                    student, dT, getName(), student.getTime(), dT, student.getGrade());
+                System.out.printf("Thread: %s Arrival: %dms Assistant: %s TTC: %dms:%dms Score: %d\n",
+                        student, dT, getName(), student.getTime(), dT, student.getGrade());
 
-            Main.assistantSemaphore.release();
+                Main.assistantSemaphore.release();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

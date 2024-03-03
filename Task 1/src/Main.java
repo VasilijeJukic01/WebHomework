@@ -18,20 +18,22 @@ public class Main {
         int students = scanner.nextInt();
 
         ScheduledExecutorService executorServiceScheduled = Executors.newScheduledThreadPool(students);
+
         Queue<Student> professorStudents = new LinkedList<>();
+        BlockingQueue<Student[]> professorStudentPairs = new LinkedBlockingQueue<>();
+        Professor professor = new Professor(professorStudentPairs);
+        professor.start();
+
+        BlockingQueue<Student> assistantStudents = new LinkedBlockingQueue<>();
+        Assistant assistant = new Assistant(assistantStudents);
+        assistant.start();
 
         CyclicBarrier cyclicBarrier = new CyclicBarrier(2, () -> {
             try {
                 Main.professorSemaphore.acquire();
+                professorStudentPairs.add(new Student[]{professorStudents.poll(), professorStudents.poll()});
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }
-            Professor professor = new Professor(professorStudents.poll(), professorStudents.poll());
-            professor.start();
-            try {
-                professor.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         });
 
@@ -62,9 +64,9 @@ public class Main {
             }
             else {
                 if (Main.assistantSemaphore.tryAcquire()) {
-                    Assistant assistant = new Assistant(new Student());
                     i += 1;
-                    executorServiceScheduled.schedule(assistant, (int) (new Random().nextDouble() * 1000), TimeUnit.MILLISECONDS);
+                    executorServiceScheduled.schedule(() -> assistantStudents.add(new Student()),
+                            (int) (new Random().nextDouble() * 1000), TimeUnit.MILLISECONDS);
                 }
             }
         }
