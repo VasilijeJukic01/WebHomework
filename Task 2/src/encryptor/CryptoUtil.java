@@ -8,9 +8,10 @@ import java.util.Base64;
 
 public class CryptoUtil {
 
+    private static volatile CryptoUtil instance;
     private static SecretKey secretKey;
 
-    static {
+    private CryptoUtil() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
             keyGenerator.init(128);
@@ -20,7 +21,18 @@ public class CryptoUtil {
         }
     }
 
-    public static String encrypt(String plainText) {
+    public static CryptoUtil getInstance() {
+        if (instance == null) {
+            synchronized (CryptoUtil.class) {
+                if (instance == null) {
+                    instance = new CryptoUtil();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public String encrypt(String plainText) {
         try {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
@@ -32,7 +44,7 @@ public class CryptoUtil {
         return null;
     }
 
-    public static String decrypt(String encryptedText) {
+    public String decrypt(String encryptedText) {
         try {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);

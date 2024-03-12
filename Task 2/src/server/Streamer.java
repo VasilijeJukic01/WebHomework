@@ -15,7 +15,7 @@ public class Streamer implements Runnable {
         try {
             while (true) {
                 String message = ServerRepository.queue.take();
-                String decryptedMessage = CryptoUtil.decrypt(message);
+                String decryptedMessage = CryptoUtil.getInstance().decrypt(message);
                 notify(decryptedMessage);
             }
         }
@@ -23,7 +23,7 @@ public class Streamer implements Runnable {
             e.printStackTrace();
         }
         finally {
-            Utils.closeResource(writer);
+            Utils.getInstance().closeResource(writer);
         }
     }
 

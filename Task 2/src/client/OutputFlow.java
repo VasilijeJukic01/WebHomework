@@ -34,8 +34,8 @@ public class OutputFlow implements Runnable {
             e.printStackTrace();
         }
         finally {
-            Utils.closeResource(writer);
-            Utils.closeResource(reader);
+            Utils.getInstance().closeResource(writer);
+            Utils.getInstance().closeResource(reader);
         }
 
     }

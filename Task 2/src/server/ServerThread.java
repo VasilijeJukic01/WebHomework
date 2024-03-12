@@ -35,9 +35,9 @@ public class ServerThread implements Runnable {
                     ServerRepository.users.put(user.toLowerCase(), socket);
 
                     PrintWriter w = writer;
-                    ServerRepository.messages.forEach(message -> w.println(CryptoUtil.decrypt(message)));
+                    ServerRepository.messages.forEach(message -> w.println(CryptoUtil.getInstance().decrypt(message)));
 
-                    String encryptedMessage = CryptoUtil.encrypt(ServerRepository.welcomes.get(
+                    String encryptedMessage = CryptoUtil.getInstance().encrypt(ServerRepository.welcomes.get(
                             new Random().nextInt(ServerRepository.welcomes.size())).replace("%user", user));
                     ServerRepository.queue.add(encryptedMessage);
 
@@ -54,9 +54,9 @@ public class ServerThread implements Runnable {
             // Chat
             while (true) {
                 String message = reader.readLine();
-                message = Utils.format(message.trim(), user);
+                message = Utils.getInstance().format(message.trim(), user);
 
-                String encryptedMessage = CryptoUtil.encrypt(message);
+                String encryptedMessage = CryptoUtil.getInstance().encrypt(message);
                 ServerRepository.queue.add(encryptedMessage);
 
                 if (ServerRepository.messages.size() >= 100)
@@ -70,9 +70,9 @@ public class ServerThread implements Runnable {
             e.printStackTrace();
         }
         finally {
-            Utils.closeResource(reader);
-            Utils.closeResource(writer);
-            Utils.closeResource(socket);
+            Utils.getInstance().closeResource(reader);
+            Utils.getInstance().closeResource(writer);
+            Utils.getInstance().closeResource(socket);
         }
     }
 

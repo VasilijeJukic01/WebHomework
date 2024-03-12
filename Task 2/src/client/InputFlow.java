@@ -31,7 +31,7 @@ public class InputFlow implements Runnable {
             e.printStackTrace();
         }
         finally {
-            Utils.closeResource(reader);
+            Utils.getInstance().closeResource(reader);
         }
     }
 
