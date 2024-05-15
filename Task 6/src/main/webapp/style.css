@@ -1,0 +1,55 @@
+/* Base Dark Theme */
+.dark-theme {
+  background-color: #222;
+  color: #fff;
+}
+
+/* List Group Item */
+.dark-theme .list-group-item {
+  background-color: #333;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: orange;
+  border-color: orange;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: darkorange;
+}
+
+/* Navbar */
+.dark-theme.navbar {
+  background-color: #222 !important;
+}
+
+.dark-theme.navbar .nav-link {
+  color: #fff !important;
+}
+
+/* Form Inputs */
+.dark-theme input,
+.dark-theme textarea {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+}
+
+.dark-theme input:focus,
+.dark-theme textarea:focus {
+  background-color: #888282;
+  border-color: #666;
+}
+
+/* Active Nav Item */
+.nav-item.active a {
+  cursor: pointer;
+}
+
+/* Additional Styles */
+#new-post-button {
+  margin: 15px;
+}
